@@ -11,3 +11,6 @@ build/
 build-*/
 docgen_tmp/
 
+# ROMs
+*.gbc
+*.gba
