@@ -4,6 +4,8 @@ const Allocator = std.mem.Allocator;
 
 const disassembler = @import("disassembler.zig");
 
+const Commands = enum { hexdump, disassemble, emulate };
+
 fn read_rom(allocator: Allocator, rom_path: []const u8) ![]u8 {
     const file = std.fs.cwd().openFile(rom_path, .{}) catch |err| {
         std.log.err("could not open file: {s}\n", .{@errorName(err)});
@@ -18,7 +20,18 @@ fn read_rom(allocator: Allocator, rom_path: []const u8) ![]u8 {
 }
 
 fn print_usage() !void {
-    try stdout.writeAll("usage: PocketZig <rom>\n");
+    try stdout.writeAll(
+        \\Usage: PocketZig <command> <rom>
+        \\
+        \\  <rom>           GameBoy ROM file
+        \\
+        \\Commands:
+        \\
+        \\  hexdump         Print a hexdump of a binary
+        \\  disassemble     Disassemble a ROM
+        \\  emulate         Emulate a ROM
+        \\
+    );
 }
 
 pub fn main() !void {
@@ -29,10 +42,16 @@ pub fn main() !void {
     defer it.deinit();
     _ = it.skip(); // ignore binary path
 
+    const cmd_str = it.next() orelse return print_usage();
+    const command = std.meta.stringToEnum(Commands, cmd_str) orelse return print_usage();
     const rom_path = it.next() orelse return print_usage();
 
     const bytes = read_rom(gpa, rom_path) catch return;
     defer gpa.free(bytes);
 
-    try disassembler.hexdump(std.io.getStdOut().writer(), bytes);
+    switch (command) {
+        .hexdump => try disassembler.hexdump(std.io.getStdOut().writer(), bytes),
+        .disassemble => std.debug.print("Not implemented\n", .{}),
+        .emulate => std.debug.print("Not implemented\n", .{}),
+    }
 }
