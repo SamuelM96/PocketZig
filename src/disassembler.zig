@@ -14,7 +14,7 @@ pub fn hexdump(writer: anytype, bytes: []const u8) !void {
             try writer.print("{x:0>8}: ", .{i});
         }
 
-        try writer.print("{x:0<2}", .{byte});
+        try writer.print("{x:0>2}", .{byte});
 
         if ((i + 1) % 2 == 0) {
             try writer.print(" ", .{});
@@ -30,7 +30,7 @@ pub fn hexdump(writer: anytype, bytes: []const u8) !void {
     if (remainder != 16) {
         const is_odd = remainder % 2;
         for (0..remainder) |i| {
-            try writer.print("{s: <2}", .{""});
+            try writer.print("{s: >2}", .{""});
             if ((i + 1 + is_odd) % 2 == 0) {
                 try writer.print(" ", .{});
             }
