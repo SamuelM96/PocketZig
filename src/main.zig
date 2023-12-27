@@ -46,12 +46,12 @@ pub fn main() !void {
     const command = std.meta.stringToEnum(Commands, cmd_str) orelse return print_usage();
     const rom_path = it.next() orelse return print_usage();
 
-    const bytes = read_rom(gpa, rom_path) catch return;
-    defer gpa.free(bytes);
+    const rom = read_rom(gpa, rom_path) catch return;
+    defer gpa.free(rom);
 
     switch (command) {
-        .hexdump => try disassembler.hexdump(std.io.getStdOut().writer(), bytes),
-        .disassemble => std.debug.print("Not implemented\n", .{}),
+        .hexdump => try disassembler.hexdump(std.io.getStdOut().writer(), rom),
+        .disassemble => try disassembler.disassemble(rom),
         .emulate => std.debug.print("Not implemented\n", .{}),
     }
 }
