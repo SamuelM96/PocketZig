@@ -51,7 +51,7 @@ pub fn main() !void {
 
     switch (command) {
         .hexdump => try disassembler.hexdump(std.io.getStdOut().writer(), rom),
-        .disassemble => try disassembler.disassemble(rom),
+        .disassemble => try disassembler.disassemble(gpa, rom),
         .emulate => std.debug.print("Not implemented\n", .{}),
     }
 }
