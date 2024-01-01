@@ -51,7 +51,11 @@ pub fn main() !void {
 
     switch (command) {
         .hexdump => try disassembler.hexdump(std.io.getStdOut().writer(), rom, 0),
-        .disassemble => try disassembler.disassemble(gpa, rom),
+        .disassemble => {
+            var disassembly = try disassembler.disassemble(gpa, rom, 0x0);
+            defer disassembly.deinit();
+            try disassembler.print_disassembly(disassembly);
+        },
         .emulate => std.debug.print("Not implemented\n", .{}),
     }
 }
