@@ -280,25 +280,23 @@ pub fn disassemble(allocator: Allocator, rom: []u8) !void {
                 },
                 0x76 => std.debug.print("{X:0>4} - HALT - 0x{X}\n", .{ real_addr, opcode }),
                 0x80...0x85, 0x87...0x8D, 0x8F => {
-                    const carry: bool = (opcode & 8) == 1; // && get_carry();
+                    const carry: bool = (opcode & 8) == 1;
                     const src: u8 = regs[opcode & 7];
                     const op = if (carry) "ADC" else "ADD";
                     std.debug.print("{X:0>4} - {s} A, {c} - 0x{X}\n", .{ real_addr, op, src, opcode });
-                    // adc(regs['A'], regs[opcode & 7], carry);
                 },
                 0x86 => std.debug.print("{X:0>4} - ADD A, (HL) - 0x{X}\n", .{ real_addr, opcode }),
                 0x8E => std.debug.print("{X:0>4} - ADC A, (HL) - 0x{X}\n", .{ real_addr, opcode }),
                 0x90...0x95, 0x97...0x9D, 0x9F => {
-                    const carry: bool = (opcode & 8) == 1; // && get_carry();
+                    const carry: bool = (opcode & 8) == 1;
                     const src: u8 = regs[opcode & 7];
                     const op = if (carry) "SBC" else "SUB";
                     std.debug.print("{X:0>4} - {s} A, {c} - 0x{X}\n", .{ real_addr, op, src, opcode });
-                    // sbc(regs['A'], regs[opcode & 7], carry);
                 },
                 0x96 => std.debug.print("{X:0>4} - SUB A, (HL) - 0x{X}\n", .{ real_addr, opcode }),
                 0x9E => std.debug.print("{X:0>4} - SBC A, (HL) - 0x{X}\n", .{ real_addr, opcode }),
                 0xA0...0xA5, 0xA7...0xAD, 0xAF => {
-                    const carry: bool = (opcode & 8) == 1; // && get_carry();
+                    const carry: bool = (opcode & 8) == 1;
                     const src: u8 = regs[opcode & 7];
                     const op = if (carry) "XOR" else "AND";
                     std.debug.print("{X:0>4} - {s} A, {c} - 0x{X}\n", .{ real_addr, op, src, opcode });
@@ -306,7 +304,7 @@ pub fn disassemble(allocator: Allocator, rom: []u8) !void {
                 0xA6 => std.debug.print("{X:0>4} - AND A, (HL) - 0x{X}\n", .{ real_addr, opcode }),
                 0xAE => std.debug.print("{X:0>4} - XOR A, (HL) - 0x{X}\n", .{ real_addr, opcode }),
                 0xB0...0xB5, 0xB7...0xBD, 0xBF => {
-                    const carry: bool = (opcode & 8) == 1; // && get_carry();
+                    const carry: bool = (opcode & 8) == 1;
                     const src: u8 = regs[opcode & 7];
                     const op = if (carry) "CP" else "OR";
                     std.debug.print("{X:0>4} - {s} A, {c} - 0x{X}\n", .{ real_addr, op, src, opcode });
@@ -688,7 +686,6 @@ pub fn disassemble(allocator: Allocator, rom: []u8) !void {
                 0xFC,
                 0xFD,
                 => {
-                    // TODO: Handle invalid instruction
                     std.debug.print("{X:0>4} - ILLEGAL - 0x{X}\n", .{ real_addr, opcode });
                     break;
                 },
@@ -698,7 +695,22 @@ pub fn disassemble(allocator: Allocator, rom: []u8) !void {
         std.debug.print("\n", .{});
     }
 
-    for (queue.items) |value| {
-        std.debug.print("{X:0>4}\n", .{value});
+    const stdout_writer = std.io.getStdOut().writer();
+    var read_data = false;
+    var data_start: usize = 0;
+    for (0..rom.len) |i| {
+        if (processed.contains(@truncate(i))) {
+            if (read_data) {
+                std.debug.print("========== DATA @ {X:0>4} ==========\n", .{data_start});
+                try hexdump(stdout_writer, rom[data_start..i], data_start);
+                read_data = false;
+            }
+            continue;
+        } else if (read_data) {
+            continue;
+        }
+
+        read_data = true;
+        data_start = i;
     }
 }
