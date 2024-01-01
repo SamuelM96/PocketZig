@@ -50,7 +50,7 @@ pub fn main() !void {
     defer gpa.free(rom);
 
     switch (command) {
-        .hexdump => try disassembler.hexdump(std.io.getStdOut().writer(), rom),
+        .hexdump => try disassembler.hexdump(std.io.getStdOut().writer(), rom, 0),
         .disassemble => try disassembler.disassemble(gpa, rom),
         .emulate => std.debug.print("Not implemented\n", .{}),
     }

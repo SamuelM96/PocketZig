@@ -2,7 +2,7 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 const testing = std.testing;
 
-pub fn hexdump(writer: anytype, bytes: []const u8) !void {
+pub fn hexdump(writer: anytype, bytes: []const u8, base: usize) !void {
     var ascii: [16]u8 = undefined;
     for (bytes, 0..) |byte, i| {
         if (std.ascii.isPrint(byte)) {
@@ -12,7 +12,7 @@ pub fn hexdump(writer: anytype, bytes: []const u8) !void {
         }
 
         if (i % 16 == 0) {
-            try writer.print("{x:0>8}: ", .{i});
+            try writer.print("{x:0>8}: ", .{i + base});
         }
 
         try writer.print("{x:0>2}", .{byte});
