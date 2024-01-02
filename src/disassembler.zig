@@ -1774,7 +1774,6 @@ pub inline fn print_operand(op: Operand) void {
 }
 
 pub inline fn print_instruction(instruction: Instruction) void {
-    std.debug.print("{X:0>4} - ", .{instruction.address});
     if (instruction.mnemonic == InstructionMnemonic.LD_IO) {
         std.debug.print("LD ", .{});
         const op1 = instruction.op1.?;
@@ -1814,14 +1813,6 @@ pub inline fn print_instruction(instruction: Instruction) void {
             }
         }
     }
-
-    std.debug.print(" - ", .{});
-
-    for (instruction.bytes) |byte| {
-        std.debug.print("0x{X:0>2} ", .{byte});
-    }
-
-    std.debug.print("\n", .{});
 }
 
 pub fn print_disassembly(disassembly: Disassembly) !void {
@@ -1832,7 +1823,21 @@ pub fn print_disassembly(disassembly: Disassembly) !void {
             switch (lu) {
                 .instruction => |index| {
                     const instruction = disassembly.instructions.items[index];
+                    std.debug.print("{X:0>4}:   ", .{instruction.address});
+
+                    for (instruction.bytes) |byte| {
+                        std.debug.print("{X:0>2} ", .{byte});
+                    }
+
+                    // Each byte takes 3 chars of space, so for 3 bytes max,
+                    // we need 3 * 3 chars of padding, minus whatever was printed
+                    for (0..9 - instruction.bytes.len * 3) |_| {
+                        std.debug.print(" ", .{});
+                    }
+
+                    std.debug.print("  ", .{});
                     print_instruction(instruction);
+                    std.debug.print("\n", .{});
                 },
                 .data_block => |index| {
                     const data_block = disassembly.data_blocks.items[index];
