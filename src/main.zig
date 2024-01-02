@@ -1,5 +1,4 @@
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
 const Allocator = std.mem.Allocator;
 
 const disassembler = @import("disassembler.zig");
@@ -20,7 +19,7 @@ fn read_rom(allocator: Allocator, rom_path: []const u8) ![]u8 {
 }
 
 fn print_usage() !void {
-    try stdout.writeAll(
+    try std.io.getStdOut().writer().writeAll(
         \\Usage: PocketZig <command> <rom>
         \\
         \\  <rom>           GameBoy ROM file
