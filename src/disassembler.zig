@@ -164,27 +164,39 @@ test "hexdump output single line format" {
     const bytes = [_]u8{ 0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0xba, 0xbe };
     var buffer: [1024]u8 = undefined;
     var result = std.io.fixedBufferStream(&buffer);
-    try hexdump(result.writer(), &bytes);
+    try hexdump(result.writer(), &bytes, 0);
 
-    try testing.expectEqualSlices(u8, "00000000: dead beef cafe babe                      ........\n", result.getWritten());
+    try testing.expectEqualSlices(
+        u8,
+        "00000000: DEAD BEEF CAFE BABE                      ........\n",
+        result.getWritten(),
+    );
 }
 
 test "hexdump output multiline format" {
     const bytes = [_]u8{ 0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0xba, 0xbe, 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!' };
     var buffer: [1024]u8 = undefined;
     var result = std.io.fixedBufferStream(&buffer);
-    try hexdump(result.writer(), &bytes);
+    try hexdump(result.writer(), &bytes, 0);
 
-    try testing.expectEqualSlices(u8, "00000000: dead beef cafe babe 4865 6c6c 6f20 776f  ........Hello wo\n00000010: 726c 6421                                rld!\n", result.getWritten());
+    try testing.expectEqualSlices(u8,
+        \\00000000: DEAD BEEF CAFE BABE 4865 6C6C 6F20 776F  ........Hello wo
+        \\00000010: 726C 6421                                rld!
+        \\
+    , result.getWritten());
 }
 
 test "hexdump padding with an odd number of bytes" {
     const bytes = [_]u8{ 0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0xba, 0xbe, 0x41 };
     var buffer: [1024]u8 = undefined;
     var result = std.io.fixedBufferStream(&buffer);
-    try hexdump(result.writer(), &bytes);
+    try hexdump(result.writer(), &bytes, 0);
 
-    try testing.expectEqualSlices(u8, "00000000: dead beef cafe babe 41                   ........A\n", result.getWritten());
+    try testing.expectEqualSlices(
+        u8,
+        "00000000: DEAD BEEF CAFE BABE 41                   ........A\n",
+        result.getWritten(),
+    );
 }
 
 // TODO: Unit tests
