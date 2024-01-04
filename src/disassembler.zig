@@ -1827,7 +1827,7 @@ pub inline fn print_instruction(instruction: Instruction) void {
     }
 }
 
-pub fn print_disassembly(disassembly: Disassembly) !void {
+pub fn print_disassembly(disassembly: *const Disassembly) !void {
     const stdout_writer = std.io.getStdOut().writer();
     for (0..disassembly.rom.len) |ip| {
         const lookup = disassembly.addressbook.get(ip);

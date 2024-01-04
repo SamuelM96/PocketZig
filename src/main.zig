@@ -1,22 +1,10 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
+const common = @import("common.zig");
 const disassembler = @import("disassembler.zig");
 
 const Commands = enum { hexdump, disassemble, emulate };
-
-fn read_rom(allocator: Allocator, rom_path: []const u8) ![]u8 {
-    const file = std.fs.cwd().openFile(rom_path, .{}) catch |err| {
-        std.log.err("could not open file: {s}\n", .{@errorName(err)});
-        return err;
-    };
-    defer file.close();
-
-    return file.readToEndAlloc(allocator, 1_000_000_000) catch |err| {
-        std.log.err("could not read file: {s}\n", .{@errorName(err)});
-        return err;
-    };
-}
 
 fn print_usage() !void {
     try std.io.getStdOut().writer().writeAll(
@@ -45,7 +33,7 @@ pub fn main() !void {
     const command = std.meta.stringToEnum(Commands, cmd_str) orelse return print_usage();
     const rom_path = it.next() orelse return print_usage();
 
-    const rom = read_rom(gpa, rom_path) catch return;
+    const rom = common.read_rom(gpa, rom_path) catch return;
     defer gpa.free(rom);
 
     switch (command) {
@@ -53,7 +41,7 @@ pub fn main() !void {
         .disassemble => {
             var disassembly = try disassembler.disassemble(gpa, rom, 0x0);
             defer disassembly.deinit();
-            try disassembler.print_disassembly(disassembly);
+            try disassembler.print_disassembly(&disassembly);
         },
         .emulate => std.debug.print("Not implemented\n", .{}),
     }
