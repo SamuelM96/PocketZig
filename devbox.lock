@@ -1,6 +1,26 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "pre-commit@latest": {
+      "last_modified": "2024-01-28T16:40:23Z",
+      "resolved": "github:NixOS/nixpkgs/902d74314fae5eb824bc7b597bd4d39640345557#pre-commit",
+      "source": "devbox-search",
+      "version": "3.6.0",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/a20aq6qhs0zz7dj9131diyn8sc5bb9qd-pre-commit-3.6.0"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/rvhjwfaky3vkclxk31ns0lhcynnjikyh-pre-commit-3.6.0"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/05hqvj5z9jscc9lx2l8ma0yf258a6kls-pre-commit-3.6.0"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/wzybq4394zfr3m5p0khs02i66x33cc8i-pre-commit-3.6.0"
+        }
+      }
+    },
     "zig@latest": {
       "last_modified": "2024-01-27T14:55:31Z",
       "resolved": "github:NixOS/nixpkgs/160b762eda6d139ac10ae081f8f78d640dd523eb#zig",

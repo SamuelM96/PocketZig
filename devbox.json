@@ -1,22 +1,23 @@
 {
-    "packages": [
-        "zig@latest",
-        "zls@latest"
+  "packages": [
+    "zig@latest",
+    "zls@latest",
+    "pre-commit@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'Welcome to devbox!' > /dev/null"
     ],
-    "shell": {
-        "init_hook": [
-            "echo 'Welcome to devbox!' > /dev/null"
-        ],
-        "scripts": {
-            "pocketzig": [
-                "zig build run"
-            ],
-            "build": [
-                "zig build"
-            ],
-            "test": [
-                "zig build test --summary all"
-            ]
-        }
+    "scripts": {
+      "pocketzig": [
+        "zig build run"
+      ],
+      "build": [
+        "zig build"
+      ],
+      "test": [
+        "zig build test --summary all"
+      ]
     }
+  }
 }
