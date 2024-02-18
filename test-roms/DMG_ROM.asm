@@ -9,7 +9,7 @@ Addr_0007:
 
 	LD HL,$ff26		; $000c  Setup Audio
 	LD C,$11		; $000f
-	LD A,$80		; $0011 
+	LD A,$80		; $0011
 	LD (HL-),A		; $0013
 	LD ($FF00+C),A	; $0014
 	INC C			; $0015
@@ -99,7 +99,7 @@ Addr_0086:
 	LD A,($FF00+$42)	; $0086
 	SUB B			; $0088
 	LD ($FF00+$42),A	; $0089  scroll logo up if B=1
-	DEC D			; $008b  
+	DEC D			; $008b
 	JR NZ, Addr_0060	; $008c
 
 	DEC B			; $008e  set B=0 first time
@@ -129,9 +129,9 @@ Addr_0098:
 
 Addr_00A8:
 	;Nintendo Logo
-	.DB $CE,$ED,$66,$66,$CC,$0D,$00,$0B,$03,$73,$00,$83,$00,$0C,$00,$0D 
-	.DB $00,$08,$11,$1F,$88,$89,$00,$0E,$DC,$CC,$6E,$E6,$DD,$DD,$D9,$99 
-	.DB $BB,$BB,$67,$63,$6E,$0E,$EC,$CC,$DD,$DC,$99,$9F,$BB,$B9,$33,$3E 
+	.DB $CE,$ED,$66,$66,$CC,$0D,$00,$0B,$03,$73,$00,$83,$00,$0C,$00,$0D
+	.DB $00,$08,$11,$1F,$88,$89,$00,$0E,$DC,$CC,$6E,$E6,$DD,$DD,$D9,$99
+	.DB $BB,$BB,$67,$63,$6E,$0E,$EC,$CC,$DD,$DC,$99,$9F,$BB,$B9,$33,$3E
 
 Addr_00D8:
 	;More video data
@@ -139,7 +139,7 @@ Addr_00D8:
 
 	; ===== Nintendo logo comparison routine =====
 
-Addr_00E0:	
+Addr_00E0:
 	LD HL,$0104		; $00e0	; point HL to Nintendo logo in cart
 	LD DE,$00a8		; $00e3	; point DE to Nintendo logo in DMG rom
 
