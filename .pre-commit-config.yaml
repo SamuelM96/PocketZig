@@ -16,7 +16,7 @@ repos:
         stages: [commit]
       - id: zig-test
         name: Run zig tests
-        entry: zig build test
+        entry: zig build test --
         language: system
         files: '.*\.zig$'
         stages: [push]
