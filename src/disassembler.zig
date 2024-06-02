@@ -825,7 +825,7 @@ pub fn disassemble(allocator: Allocator, rom: []u8, base_addr: u16) !Disassembly
                     .mnemonic = InstructionMnemonic.HALT,
                 }),
                 0x80...0x85, 0x87...0x8D, 0x8F => {
-                    const carry: bool = (opcode & 8) == 1;
+                    const carry: bool = (opcode & 8) == 8;
                     const src: Register = @enumFromInt(opcode & 7);
                     try instructions.append(.{
                         .address = real_addr,
@@ -850,7 +850,7 @@ pub fn disassemble(allocator: Allocator, rom: []u8, base_addr: u16) !Disassembly
                     .mnemonic = InstructionMnemonic.ADC,
                 }),
                 0x90...0x95, 0x97...0x9D, 0x9F => {
-                    const carry: bool = (opcode & 8) == 1;
+                    const carry: bool = (opcode & 8) == 8;
                     const src: Register = @enumFromInt(opcode & 7);
                     try instructions.append(.{
                         .address = real_addr,
@@ -875,7 +875,7 @@ pub fn disassemble(allocator: Allocator, rom: []u8, base_addr: u16) !Disassembly
                     .mnemonic = InstructionMnemonic.SBC,
                 }),
                 0xA0...0xA5, 0xA7...0xAD, 0xAF => {
-                    const carry: bool = (opcode & 8) == 1;
+                    const carry: bool = (opcode & 8) == 8;
                     const src: Register = @enumFromInt(opcode & 7);
                     try instructions.append(.{
                         .address = real_addr,
@@ -900,7 +900,7 @@ pub fn disassemble(allocator: Allocator, rom: []u8, base_addr: u16) !Disassembly
                     .mnemonic = InstructionMnemonic.XOR,
                 }),
                 0xB0...0xB5, 0xB7...0xBD, 0xBF => {
-                    const carry: bool = (opcode & 8) == 1;
+                    const carry: bool = (opcode & 8) == 8;
                     const src: Register = @enumFromInt(opcode & 7);
                     try instructions.append(.{
                         .address = real_addr,
