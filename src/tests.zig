@@ -1,4 +1,4 @@
 comptime {
-    _ = @import("disassembler.zig");
     _ = @import("cpu.zig");
+    _ = @import("disassembler.zig");
 }

@@ -2,6 +2,7 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 
 const common = @import("common.zig");
+const cpu = @import("cpu.zig");
 const disassembler = @import("disassembler.zig");
 
 const Commands = enum { hexdump, disassemble, emulate };
@@ -43,6 +44,12 @@ pub fn main() !void {
             defer disassembly.deinit();
             try disassembler.print_disassembly(&disassembly);
         },
-        .emulate => std.debug.print("Not implemented\n", .{}),
+        .emulate => {
+            var state: cpu.State = .{
+                .registers = .{},
+                .memory = rom,
+            };
+            cpu.execute(&state);
+        },
     }
 }
