@@ -5,21 +5,37 @@ const common = @import("common.zig");
 const cpu = @import("cpu.zig");
 const disassembler = @import("disassembler.zig");
 
-const Commands = enum { hexdump, disassemble, emulate };
+const Commands = enum {
+    const Self = @This();
+
+    hexdump,
+    disassemble,
+    emulate,
+
+    pub fn help(self: Self) []const u8 {
+        return switch (self) {
+            .hexdump => "Print a hexdump of a binary",
+            .disassemble => "Disassemble a ROM",
+            .emulate => "Emulate a ROM",
+        };
+    }
+};
 
 fn print_usage() !void {
-    try std.io.getStdOut().writer().writeAll(
+    const stdout = std.io.getStdOut().writer();
+    try stdout.writeAll(
         \\Usage: PocketZig <command> <rom>
         \\
         \\  <rom>           GameBoy ROM file
         \\
         \\Commands:
         \\
-        \\  hexdump         Print a hexdump of a binary
-        \\  disassemble     Disassemble a ROM
-        \\  emulate         Emulate a ROM
         \\
     );
+    inline for (@typeInfo(Commands).Enum.fields) |field| {
+        const cmd = @field(Commands, field.name);
+        try stdout.print("  {s:<12}    {s}\n", .{ field.name, cmd.help() });
+    }
 }
 
 pub fn main() !void {
