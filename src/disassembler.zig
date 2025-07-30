@@ -211,7 +211,7 @@ pub fn disassemble(allocator: Allocator, rom: []u8, base_addr: u16) !Disassembly
     try queue.append(0);
 
     while (queue.items.len > 0) {
-        var ip: u16 = queue.pop();
+        var ip: u16 = queue.pop() orelse unreachable;
         if (addressbook.contains(ip + base_addr)) {
             continue;
         }

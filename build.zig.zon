@@ -1,7 +1,8 @@
 .{
-    .name = "PocketZig",
+    .name = .PocketZig,
+    .fingerprint = 0xf6b00eab7d865450,
     .version = "0.0.0",
-    .minimum_zig_version = "0.12.0",
+    .minimum_zig_version = "0.14.0",
     .dependencies = .{},
     .paths = .{
         "",

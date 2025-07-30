@@ -31,7 +31,7 @@ fn print_usage() !void {
         \\
         \\
     );
-    inline for (@typeInfo(Commands).Enum.fields) |field| {
+    inline for (@typeInfo(Commands).@"enum".fields) |field| {
         const cmd = @field(Commands, field.name);
         try stdout.print("  {s:<12}    {s}\n", .{ field.name, cmd.help() });
     }
