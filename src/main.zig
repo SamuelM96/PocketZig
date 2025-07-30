@@ -1,24 +1,40 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
-const common = @import("common.zig");
+const cpu = @import("cpu.zig");
 const disassembler = @import("disassembler.zig");
 
-const Commands = enum { hexdump, disassemble, emulate };
+const Commands = enum {
+    const Self = @This();
+
+    hexdump,
+    disassemble,
+    emulate,
+
+    pub fn help(self: Self) []const u8 {
+        return switch (self) {
+            .hexdump => "Print a hexdump of a binary",
+            .disassemble => "Disassemble a ROM",
+            .emulate => "Emulate a ROM",
+        };
+    }
+};
 
 fn print_usage() !void {
-    try std.io.getStdOut().writer().writeAll(
+    const stdout = std.io.getStdOut().writer();
+    try stdout.writeAll(
         \\Usage: PocketZig <command> <rom>
         \\
         \\  <rom>           GameBoy ROM file
         \\
         \\Commands:
         \\
-        \\  hexdump         Print a hexdump of a binary
-        \\  disassemble     Disassemble a ROM
-        \\  emulate         Emulate a ROM
         \\
     );
+    inline for (@typeInfo(Commands).Enum.fields) |field| {
+        const cmd = @field(Commands, field.name);
+        try stdout.print("  {s:<12}    {s}\n", .{ field.name, cmd.help() });
+    }
 }
 
 pub fn main() !void {
@@ -33,7 +49,10 @@ pub fn main() !void {
     const command = std.meta.stringToEnum(Commands, cmd_str) orelse return print_usage();
     const rom_path = it.next() orelse return print_usage();
 
-    const rom = common.read_rom(gpa, rom_path) catch return;
+    const rom = std.fs.cwd().readFileAlloc(gpa, rom_path, std.math.maxInt(usize)) catch |err| {
+        std.log.err("could not read ROM: {s}\n", .{@errorName(err)});
+        std.process.exit(1);
+    };
     defer gpa.free(rom);
 
     switch (command) {
@@ -43,6 +62,12 @@ pub fn main() !void {
             defer disassembly.deinit();
             try disassembler.print_disassembly(&disassembly);
         },
-        .emulate => std.debug.print("Not implemented\n", .{}),
+        .emulate => {
+            var state: cpu.State = .{
+                .registers = .{},
+                .memory = rom,
+            };
+            cpu.execute(&state);
+        },
     }
 }

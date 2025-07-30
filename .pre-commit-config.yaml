@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+        stages: [pre-commit]
+      - id: trailing-whitespace
+        stages: [pre-commit]
+  - repo: local
+    hooks:
+      - id: zig-fmt
+        name: Format zig code
+        entry: zig fmt
+        language: system
+        files: '.*\.zig$'
+        stages: [pre-commit]
+      - id: zig-test
+        name: Run zig tests
+        entry: zig build test --
+        language: system
+        files: '.*\.zig$'
+        stages: [pre-push]
